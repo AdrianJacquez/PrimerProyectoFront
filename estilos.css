@@ -1,0 +1,86 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+ background-image:url(./imagenes/gucci.webp);
+ background-size: 100%;
+}
+
+#nameshop, #filters{
+    text-align: center;
+    font-family: Verd, 'PT Sans', Verdana, sans-serif;
+    font-size: 50px;
+    font-style:oblique;
+    color: rgb(255, 255, 255);
+    margin: 5px;
+}
+#filters input, #filters #category-filter {
+    width: 500px;
+    height: 50px;
+    padding: 4px 8px;
+    margin: 5px;
+    border: 0;
+    color: rgba(133, 133, 133, 0.776);
+    background-color: black;
+    font-size: 25px;
+    font-style: oblique;
+    border: 3px solid rgb(147, 121, 37);
+    border-radius: 50px;
+    cursor: pointer; 
+} 
+
+ 
+.conteiner-cards{
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;  
+}
+
+#products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+   
+}
+
+.product-card  {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-content: space-between;
+    width: 210px;
+    margin: 5px;
+    padding: 10px;
+    background-color: rgb(165, 141, 53);
+    border-radius: 8px;
+   
+}
+
+
+
+
+.product-card img{
+    width: 190px;
+    height: 180px;
+    border-radius: 10px;
+    width: 100%; /* Ancho de la imagen */
+  transition: transform 0.3s ease; /* Transición suave para el efecto */
+}
+
+.product-card a{
+   margin: 4px;
+   
+}
+
+.product-card div{
+   display: flex;
+   justify-items: flex-end;
+ }
+
+
+
+.product-card img:hover{
+    transform: scale(1.1); /* Escalar la imagen al 110% */
+}
