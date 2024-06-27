@@ -2,35 +2,51 @@ const $products = document.querySelector("#products");
 const $titleFilter = document.querySelector("#title-filter");
 const $categoryFilter = document.querySelector("#category-filter");
 
-async function getProducts(title, category) {
-  let url = "https://fakestoreapi.com/products";
+let cachedProducts = null;  // Cache para almacenar productos después de la primera llamada a la API
 
-  if (title || category) {
-    url += "?";
-    if (title) {
-      url += `title=${title}&`;
-    }
-    if (category) {
-      url += `category=${category}`;
-    }
+async function getProducts() {
+  const url = "https://fakestoreapi.com/products";
+
+  // Usa cache si está disponible
+  if (cachedProducts) {
+    return cachedProducts;
   }
 
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    cachedProducts = data;  // Almacenar los datos en la cache
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch products:', error);
+    return [];
+  }
 }
 
 async function displayProducts(title, category) {
-  const products = await getProducts(title, category);
+  let products = await getProducts();
+
+  // Filtrar productos por título si se proporciona
+  if (title) {
+    products = products.filter(product => product.title.toLowerCase().includes(title.toLowerCase()));
+  }
+
+  // Filtrar productos por categoría si se proporciona
+  if (category) {
+    products = products.filter(product => product.category.toLowerCase() === category.toLowerCase());
+  }
 
   $products.innerHTML = "";
 
-  products.map((product) => {
+  products.forEach((product) => {
     const card = document.createElement("div");
     card.classList.add("product-card");
 
     card.innerHTML = `
-      <img src="${product.image}" />
+      <img src="${product.image}" alt="${product.title}" />
       <h5>${product.title}</h5>
       <p>Categoria: ${product.category}</p>
       <p>Precio: <strong>$${product.price}</strong></p>
@@ -47,13 +63,13 @@ async function displayProducts(title, category) {
 // Event listener para cambios en el filtro de título
 $titleFilter.addEventListener("input", () => {
   displayProducts($titleFilter.value, $categoryFilter.value);
-  console.log($titleFilter.value);
+  console.log('Title filter changed:', $titleFilter.value);
 });
 
 // Event listener para cambios en el filtro de categoría
 $categoryFilter.addEventListener("change", () => {
   displayProducts($titleFilter.value, $categoryFilter.value);
-  console.log($categoryFilter.value);
+  console.log('Category filter changed:', $categoryFilter.value);
 });
 
 // Iniciar la visualización de productos al cargar la página
