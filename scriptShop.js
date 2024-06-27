@@ -1,6 +1,6 @@
-const productsEl = document.getElementById("products");
-const titleFilterEl = document.getElementById("title-filter");
-const categoryFilterEl = document.getElementById("category-filter");
+const $products = document.querySelector("#products");
+const $titleFilter = document.querySelector("#title-filter");
+const $categoryFilter = document.querySelector("#category-filter");
 
 async function getProducts(title, category) {
   let url = "https://fakestoreapi.com/products";
@@ -10,7 +10,6 @@ async function getProducts(title, category) {
     if (title) {
       url += `title=${title}&`;
     }
-
     if (category) {
       url += `category=${category}`;
     }
@@ -18,48 +17,44 @@ async function getProducts(title, category) {
 
   const response = await fetch(url);
   const data = await response.json();
-  console.log(data);
   return data;
 }
 
-// la funcion que va a renderizar los elementos dentro del DOM
-
 async function displayProducts(title, category) {
-  // Obtener los productos filtrados
-  const productos = await getProducts(title, category);
+  const products = await getProducts(title, category);
 
-  productsEl.innerHTML = "";
+  $products.innerHTML = "";
 
-  // mostrar los productos
-  for (let product of productos) {
+  products.map((product) => {
     const card = document.createElement("div");
     card.classList.add("product-card");
 
     card.innerHTML = `
-            <img  src="${product.image}" />
-            <h5> ${product.title} </h5>
-            <p> Categoria: ${product.category} </p>
-            <p> Precio: <strong>$${product.price}</strong> </p>
-            <div>
-            <a href="#" id="comprar" class=" btn btn-primary ">Comprar</a>
-            <a href="#" id="carrito" class=" btn btn-primary ">Agregar a carrito</a>
-            </div>
+      <img src="${product.image}" />
+      <h5>${product.title}</h5>
+      <p>Categoria: ${product.category}</p>
+      <p>Precio: <strong>$${product.price}</strong></p>
+      <div>
+        <a href="#" id="comprar" class="btn btn-primary">Comprar</a>
+        <a href="#" id="carrito" class="btn btn-primary">Agregar a carrito</a>
+      </div>
+    `;
 
-        `;
-
-    productsEl.appendChild(card);
-  }
+    $products.appendChild(card);
+  });
 }
 
-/*filtros por categoria y nombre del producto*/
+// Event listener para cambios en el filtro de título
+$titleFilter.addEventListener("input", () => {
+  displayProducts($titleFilter.value, $categoryFilter.value);
+  console.log($titleFilter.value);
+});
+
+// Event listener para cambios en el filtro de categoría
+$categoryFilter.addEventListener("change", () => {
+  displayProducts($titleFilter.value, $categoryFilter.value);
+  console.log($categoryFilter.value);
+});
+
+// Iniciar la visualización de productos al cargar la página
 displayProducts();
-
-titleFilterEl.addEventListener("input", () => {
-  console.log("title-filter changed:", titleFilterEl.value);
-  displayProducts(titleFilterEl.value, categoryFilterEl.value);
-});
-
-categoryFilterEl.addEventListener("change", () => {
-  console.log("category-filter changed:", categoryFilterEl.value);
-  displayProducts(titleFilterEl.value, categoryFilterEl.value);
-});
